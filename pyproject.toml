@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "async-tv5"
+version = "1.0.0"
+description = "Async Python library for TV5 API - search, info, download videos"
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["tv5", "async", "video", "download", "api", "russian", "content"]
+authors = [
+    {name = "fsystem88", email = "ivan@fsystem88.ru"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+dependencies = [
+    "httpx>=0.24.0",
+    "beautifulsoup4>=4.12.0",
+    "aiofiles>=23.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/fsystem88/async-tv5"
+"Bug Reports" = "https://github.com/fsystem88/async-tv5/issues"
+"Source" = "https://github.com/fsystem88/async-tv5"
