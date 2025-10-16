@@ -118,6 +118,60 @@ asyncio.run(main())
 - **Legal usage** - Ensure you have rights to download and use content
 - **API stability** - Service API may change, requiring library updates
 
+## 🌐 Web API Version
+
+If you prefer a web-based solution, we provide a **single PHP file** that you can deploy on any hosting:
+
+### Quick Setup:
+1. Download `tv5_downloader.php` from this repository
+2. Upload it to your web serversite http
+3. Access via URL: `https://yoursite.com/tv5_downloader.php` (or use my site `https://tv5.fsystem88.ru/`)
+
+### Usage Examples:
+
+**Search content:**
+```
+https://yoursite.com/tv5_downloader.php?method=search&query=Charlotte%27s+Web
+```
+
+**Get available qualities:**
+```
+https://yoursite.com/tv5_downloader.php?method=get_available_qualities&player_id=19481&season=1&episode=1&voice_id=152
+```
+
+**Download video:**
+```
+https://yoursite.com/tv5_downloader.php?method=download&player_id=19481&season=1&episode=1&voice_id=152&quality=720
+```
+
+**Get M3U8 playlist:**
+```
+https://yoursite.com/tv5_downloader.php?method=download_m3u8&player_id=19481&season=1&episode=1&voice_id=152&quality=720
+```
+
+### Response Format:
+All methods return JSON responses:
+```json
+{
+	"message": "TV5 Video Downloader API",
+	"version": "1.0.0",
+	"available_methods": {
+		"search": "Search content - ?method=search&query=Название",
+		"get_tv_show": "Get TV show info - ?method=get_tv_show&query=Название&player_id=12345",
+		"get_player_data": "Get player data - ?method=get_player_data&player_id=12345",
+		"get_available_qualities": "Get available qualities - ?method=get_available_qualities&player_id=12345&season=1&episode=1&voice_id=152",
+		"download": "Download video (MP4) - ?method=download&player_id=12345&season=1&episode=1&voice_id=152&quality=720",
+		"download_m3u8": "Get M3U8 playlist - ?method=download_m3u8&player_id=12345&season=1&episode=1&voice_id=152&quality=720"
+	},
+	"notes": [
+		"Download method creates proper MP4 file with MOOV atom",
+		"M3U8 method returns playlist for direct streaming",
+		"Recommended: use download for finished files, M3U8 for streaming"
+	]
+}
+```
+
+The PHP file works out of the box - just upload and use!
 ## 📄 License
 
 MIT
@@ -239,6 +293,61 @@ asyncio.run(main())
 - **Требуется FFmpeg** для функции скачивания
 - **Правовое использование** - Убедитесь, что имеете право на скачивание и использование контента
 - **Стабильность API** - API сервиса может изменяться, что потребует обновления библиотеки
+
+## 🌐 Веб-версия API
+
+Если вам нужен веб-вариант, мы предоставляем **один PHP файл**, который можно загрузить на любой хостинг:
+
+### Быстрая установка:
+1. Скачайте `tv5_downloader.php` из этого репозитория
+2. Загрузите на ваш веб-сервер
+3. Доступ по URL: `https://yoursite.com/tv5_downloader.php`  (или используй мой сайт `https://tv5.fsystem88.ru/`)
+
+### Примеры использования:
+
+**Поиск контента:**
+```
+https://yoursite.com/tv5_downloader.php?method=search&query=Паутина+Шарлотты
+```
+
+**Получение качеств:**
+```
+https://yoursite.com/tv5_downloader.php?method=get_available_qualities&player_id=19481&season=1&episode=1&voice_id=152
+```
+
+**Скачивание видео:**
+```
+https://yoursite.com/tv5_downloader.php?method=download&player_id=19481&season=1&episode=1&voice_id=152&quality=720
+```
+
+**Получение M3U8 плейлиста:**
+```
+https://yoursite.com/tv5_downloader.php?method=download_m3u8&player_id=19481&season=1&episode=1&voice_id=152&quality=720
+```
+
+### Формат ответа:
+Все методы возвращают JSON ответы:
+```json
+{
+	"message": "TV5 Video Downloader API",
+	"version": "1.0.0",
+	"available_methods": {
+		"search": "Search content - ?method=search&query=Название",
+		"get_tv_show": "Get TV show info - ?method=get_tv_show&query=Название&player_id=12345",
+		"get_player_data": "Get player data - ?method=get_player_data&player_id=12345",
+		"get_available_qualities": "Get available qualities - ?method=get_available_qualities&player_id=12345&season=1&episode=1&voice_id=152",
+		"download": "Download video (MP4) - ?method=download&player_id=12345&season=1&episode=1&voice_id=152&quality=720",
+		"download_m3u8": "Get M3U8 playlist - ?method=download_m3u8&player_id=12345&season=1&episode=1&voice_id=152&quality=720"
+	},
+	"notes": [
+		"Download method creates proper MP4 file with MOOV atom",
+		"M3U8 method returns playlist for direct streaming",
+		"Recommended: use download for finished files, M3U8 for streaming"
+	]
+}
+```
+
+PHP файл работает сразу после загрузки - просто используйте!
 
 ## 📄 Лицензия
 
