@@ -4,6 +4,57 @@
  * GitHub: fsystem88/async-tv5
  */
 
+// Логирование запросов
+function logRequest($method, $params) {
+    $log_file = __DIR__ . '/request_history.json';
+    $max_entries = 20;
+    
+    $history = [];
+    if (file_exists($log_file)) {
+        $history = json_decode(file_get_contents($log_file), true) ?? [];
+    }
+    
+    // Сохраняем только метод и параметры
+    $new_entry = [
+        'time' => date('H:i:s'),
+        'method' => $method,
+        'params' => $params
+    ];
+    
+    array_unshift($history, $new_entry);
+    $history = array_slice($history, 0, $max_entries);
+    file_put_contents($log_file, json_encode($history, JSON_PRETTY_PRINT));
+}
+
+// Показ истории
+function showRequestHistory() {
+    $log_file = __DIR__ . '/request_history.json';
+    
+    if (!file_exists($log_file)) {
+        return ["message" => "No requests yet"];
+    }
+    
+    $history = json_decode(file_get_contents($log_file), true) ?? [];
+    
+    return [
+        "total" => count($history),
+        "history" => $history
+    ];
+}
+
+// Логируем текущий запрос
+$current_method = $_GET['method'] ?? $_POST['method'] ?? 'info';
+if ($current_method !== 'history') {
+    $params = [];
+    foreach ($_GET as $key => $value) {
+        if ($key !== 'method') $params[$key] = $value;
+    }
+    foreach ($_POST as $key => $value) {
+        if ($key !== 'method') $params[$key] = $value;
+    }
+    logRequest($current_method, $params);
+}
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
@@ -353,35 +404,6 @@ class VideoDownloader {
     }
     
     /**
-     * Альтернативный метод: скачивание как M3U8 плейлиста
-     * Клиент сам обрабатывает сегменты
-     */
-    public function downloadAsM3U8($player_id, $season, $episode, $voice_id, $quality) {
-        $client = new TV5Client();
-        $qualities = $client->getAvailableQualities($player_id, $season, $episode, $voice_id);
-        
-        if (isset($qualities['error'])) {
-            return $qualities;
-        }
-        
-        $m3u8_url = null;
-        foreach ($qualities as $q) {
-            if ($q['quality'] == $quality) {
-                $m3u8_url = $q['url'];
-                break;
-            }
-        }
-        
-        if (!$m3u8_url) {
-            return ["error" => "Quality {$quality}p not found"];
-        }
-        
-        // Перенаправляем на оригинальный M3U8
-        header('Location: ' . $m3u8_url);
-        exit;
-    }
-    
-    /**
      * Конвертация TS сегментов в правильный MP4
      */
     private function convertToMP4($temp_dir, $concat_list, $output_file) {
@@ -644,20 +666,11 @@ try {
             }
             $downloader->download($player_id, $season, $episode, $voice_id, $quality);
             break;
-            
-        case 'download_m3u8':
-            $player_id = $_GET['player_id'] ?? $_POST['player_id'] ?? '';
-            $season = $_GET['season'] ?? $_POST['season'] ?? '';
-            $episode = $_GET['episode'] ?? $_POST['episode'] ?? '';
-            $voice_id = $_GET['voice_id'] ?? $_POST['voice_id'] ?? '';
-            $quality = $_GET['quality'] ?? $_POST['quality'] ?? '';
-            
-            if (empty($player_id) || empty($season) || empty($episode) || empty($voice_id) || empty($quality)) {
-                throw new Exception('All parameters required for M3U8 download');
-            }
-            $downloader->downloadAsM3U8($player_id, $season, $episode, $voice_id, $quality);
-            break;
-            
+
+		case 'history':
+			$response = showRequestHistory();
+			break;
+
         case 'info':
         default:
             $response = [
@@ -669,13 +682,14 @@ try {
                     "get_player_data" => "Get player data - ?method=get_player_data&player_id=12345",
                     "get_available_qualities" => "Get available qualities - ?method=get_available_qualities&player_id=12345&season=1&episode=1&voice_id=152",
                     "download" => "Download video (MP4) - ?method=download&player_id=12345&season=1&episode=1&voice_id=152&quality=720",
-                    "download_m3u8" => "Get M3U8 playlist - ?method=download_m3u8&player_id=12345&season=1&episode=1&voice_id=152&quality=720"
                 ],
                 "notes" => [
                     "Download method creates proper MP4 file with MOOV atom",
                     "M3U8 method returns playlist for direct streaming",
                     "Recommended: use download for finished files, M3U8 for streaming"
-                ]
+				],
+				"history" => "Show request history - ?method=history"
+
             ];
     }
     
